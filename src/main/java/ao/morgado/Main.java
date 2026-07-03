@@ -40,6 +40,22 @@ public class Main {
 
         System.out.println("morgado".compareTo("morgab")); // returns: 0 - same text, ...
 
+        String dailyQuote = "Give me six hours to chop down a tree and I will spend the first four hours sharpening the axe";
+
+        System.out.println("IndexOf: "+ dailyQuote.indexOf("w")); // return letter position
+
+        String angodataUrl = "/api/v1/identity";
+
+        System.out.println("Angodata URL Replaced: "+ angodataUrl.replace("identity", "identities"));
+
+        System.out.println("Replace First: "+ angodataUrl.replaceFirst("^/api", "").replace("identity", "identities")); // ^ - means: Find /api only if it is at the beginning of the string.
+
+        String email = "morgado.melo @thinkpad.com ";
+        System.out.println("Email with trim: "+ email.trim());  // trim() removes only in start or end of a string
+        System.out.println("Email with replace: "+ email.replace(" ", "")); // removes all whitespaces
+
+        // In JAVA strings it are immutable
+
         // ". dot" is used as member access operator to access members from objects or classes
 
         // == PRIMITIVE AND REFERENCE TYPES == //
