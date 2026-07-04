@@ -1,352 +1,104 @@
-# Java History and Fundamentals
+# java.util.Arrays — Reference Guide
 
-## Before Java
-
-In the early 1990s, most software was written using languages such as:
-
-- C
-- C++
-
-Although these languages were extremely fast, they had several drawbacks:
-
-- Programs had to be compiled separately for each operating system.
-- An application compiled for Windows would not run on Linux or macOS.
-- Developers had to manually manage memory, which often led to issues such as:
-    - Memory leaks
-    - Buffer overflows
-    - Invalid pointers
-- Building and maintaining large software systems was difficult.
-
-At the same time, smart electronic devices such as TVs, set-top boxes, and household appliances were becoming more common. Each device had different hardware, making software development even more challenging.
-
-Sun Microsystems recognized the need for a programming language capable of running on different types of devices without requiring major changes.
+Utility class in `java.util` (since Java 1.2) providing static methods for manipulating arrays: sorting, searching, comparing, filling, copying, and converting to other structures. All methods throw `NullPointerException` if the passed array is `null`, except where noted.
 
 ---
 
-# The Birth of Java
+## 1. Sorting (`sort`)
 
-In **1991**, **Sun Microsystems** launched a research initiative called the **Green Project**.
+| Method | Description |
+|---|---|
+| `sort(int[] a)` / `sort(long[] a)` / `sort(short[] a)` / `sort(char[] a)` / `sort(byte[] a)` | Sorts the primitive array into ascending order. Internally uses a **Dual-Pivot Quicksort**, generally faster than traditional single-pivot quicksort implementations. |
+| `sort(float[] a)` / `sort(double[] a)` | Same as above, but with special handling for `NaN` and zero: `NaN` is treated as greater than any other value, and `-0.0` is treated as less than `0.0` (unlike the `==` operator). |
+| `sort(a, fromIndex, toIndex)` | Variant that sorts only the range `[fromIndex, toIndex)`. |
+| `sort(Object[] a)` | Sorts according to natural ordering (elements must implement `Comparable`). Uses a stable implementation based on **TimSort** (adaptive mergesort). |
+| `sort(T[] a, Comparator<? super T> c)` | Sorts according to a custom `Comparator`. Also stable. |
 
-The project was led by **James Gosling**.
+**Common exceptions:** `IllegalArgumentException` (if `fromIndex > toIndex`), `ArrayIndexOutOfBoundsException` (indices out of range), `ClassCastException` (elements not mutually comparable).
 
-Initially, the goal was **not** to build a language for the Internet.
+## 2. Parallel Sorting (`parallelSort`) — since Java 8
 
-Instead, the team wanted to create software for intelligent consumer devices such as:
+Same idea as `sort`, but splits the array into sub-arrays, sorts each one (falling back to sequential `sort` once a sub-array is small enough), then merges them in parallel using the **ForkJoin common pool**. Overloads exist for all primitive types and for `Object[]`/`T[]` (with or without `Comparator`, with or without a `fromIndex`/`toIndex` range). Worth it for large arrays; for small arrays the overhead isn't worth it.
 
-- Televisions
-- Remote controls
-- Home appliances
+## 3. Binary Search (`binarySearch`)
 
-The team designed a new programming language called **Oak**, named after an oak tree outside Gosling's office.
+Searches for a value in an **already sorted** array. If the array isn't sorted, the result is undefined.
 
-Later, they discovered that the name **Oak** had already been trademarked.
+- Overloads for all primitive types, for `Object[]` (natural order), and for `T[]` with a `Comparator`.
+- All have a variant with `fromIndex`/`toIndex` to restrict the search to a range.
+- **Return value:** the index of the element if found; otherwise `-(insertion point) - 1`, where the insertion point is the index at which the value would be inserted to keep the array sorted. This guarantees the return value is `>= 0` if and only if the key was found.
+- If there are multiple equal elements, there's no guarantee which index is returned.
 
-The language was then renamed **Java**, inspired by the Java coffee consumed by the development team.
+## 4. Comparison (`equals` and `deepEquals`)
 
----
+- `equals(a1, a2)`: compares arrays of the same type element by element (same length, same values in the same order). Two `null` arrays are considered equal.
+- For `double`/`float`, uses the semantics of `Double.equals`/`Float.equals`: `NaN == NaN` is `true` and `0.0 != -0.0` (unlike the `==` operator).
+- `deepEquals(Object[] a1, Object[] a2)`: like `equals`, but recursively compares nested arrays (arrays within arrays) at any depth. **Caution:** should not be used on arrays that contain themselves as elements (undefined behavior).
 
-# The Rise of the Internet
+## 5. Filling (`fill`)
 
-A few years later, the Internet began expanding rapidly.
+Assigns a value to every element of an array (or to a range `[fromIndex, toIndex)`). There's a version for each primitive type and one for `Object[]` (which throws `ArrayStoreException` if the value isn't compatible with the array's runtime type).
 
-The Green Project team realized that their language was perfectly suited for networked and distributed applications.
+## 6. Copying (`copyOf` and `copyOfRange`)
 
-In **1995**, Java was officially released.
+- `copyOf(original, newLength)`: creates a copy of the array with the given length. If `newLength` is greater, the extra elements are padded with the type's "zero" value (`0`, `false`, `null`, null character, etc.). If smaller, the array is truncated.
+- `copyOf(original, newLength, newType)`: same idea, but lets you specify the resulting array's class (useful with `Object` arrays).
+- `copyOfRange(original, from, to)`: copies a specific range `[from, to)`. If `to` exceeds the original length, the remainder is padded with default values.
+- Throws `NegativeArraySizeException` if the requested length is negative, and `ArrayIndexOutOfBoundsException`/`IllegalArgumentException` on invalid indices.
 
-Its famous slogan became:
+## 7. Hashing and String Representation
 
-> **Write Once, Run Anywhere (WORA)**
+- `hashCode(a)`: generates a hash based on the array's contents (equivalent to the hash of a `List` containing the same elements). For `Object[]`, nested arrays are hashed by identity, not content.
+- `deepHashCode(Object[] a)`: like `hashCode`, but recurses into nested arrays.
+- `toString(a)`: returns a representation like `"[1, 2, 3]"`. For `Object[]`, nested arrays show up by their identity (not their content).
+- `deepToString(Object[] a)`: recursive version, ideal for multidimensional arrays — shows the actual contents of nested arrays, with protection against self-reference (renders as `[...]`).
 
-Meaning:
-
-> Write your program once and run it on any platform.
-
-This became Java's greatest advantage.
-
----
-
-# What Problem Did Java Solve?
-
-Before Java, software had to be compiled separately for every operating system.
-
-### Example
-
-```
-C++ Program
-      │
-      ▼
-Compile for Windows
-      │
-      ▼
-Runs only on Windows
-```
-
-To run the same application elsewhere:
-
-```
-Compile again for Linux
-        ▼
-Linux Executable
-```
-
-```
-Compile again for macOS
-        ▼
-macOS Executable
-```
-
-Developers had to maintain multiple versions of the same software.
-
----
-
-Java introduced a different approach.
-
-```
-Java Source Code
-        │
-        ▼
-Compile Once
-        │
-        ▼
-Bytecode (.class)
-        │
-        ▼
-Runs on any computer with a JVM
-```
-
-This concept is known as **platform independence** or **portability**.
-
----
-
-# How Java Works
-
-Java execution happens in several stages.
-
-## 1. Write the Source Code
+## 8. Conversion to List (`asList`)
 
 ```java
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
-
-}
+List<String> stooges = Arrays.asList("Larry", "Moe", "Curly");
 ```
+
+Returns a **fixed-size** list backed by the array itself — changes to the list are reflected in the array and vice versa. Elements can't be added or removed (throws `UnsupportedOperationException`), but `set()` works.
+
+## 9. Generating Elements (`setAll` / `parallelSetAll`) — since Java 8
+
+Fills each array position using a generator function that receives the index and returns the value:
+
+```java
+int[] squares = new int[10];
+Arrays.setAll(squares, i -> i * i);
+```
+
+`parallelSetAll` does the same in parallel — useful for large arrays.
+
+## 10. Parallel Prefix Sum (`parallelPrefix`) — since Java 8
+
+Applies an associative binary operation cumulatively, in parallel. Example: array `[2, 1, 0, 3]` with addition becomes `[2, 3, 3, 6]`. For `double`, the result may differ slightly from a sequential run due to floating-point operations not being strictly associative.
+
+## 11. Streams and Spliterators — since Java 8
+
+- `stream(array)`: creates a sequential `Stream<T>`, `IntStream`, `LongStream`, or `DoubleStream` from the array (or a range of it).
+- `spliterator(array)`: returns a `Spliterator` (or the `OfInt`/`OfLong`/`OfDouble` variants) reporting `SIZED`, `SUBSIZED`, `ORDERED`, and `IMMUTABLE`, used internally by streams and other APIs.
 
 ---
 
-## 2. Compile the Code
+## Quick Reference — What to Use When
 
-The Java compiler (`javac`) converts the source code into **Bytecode**.
-
-```
-Main.java
-     │
-     ▼
- javac
-     │
-     ▼
-Main.class
-```
-
-The `.class` file **does not contain machine code**.
-
-Instead, it contains **Bytecode**.
+| I need to... | Method |
+|---|---|
+| Sort an array | `sort` |
+| Sort fast on a large array (multi-core) | `parallelSort` |
+| Search a value in a sorted array | `binarySearch` |
+| Compare two arrays | `equals` / `deepEquals` |
+| Fill an entire array with a value | `fill` |
+| Resize/copy an array | `copyOf` / `copyOfRange` |
+| Print/debug array contents | `toString` / `deepToString` |
+| Treat an array as a `List` | `asList` |
+| Generate values by index | `setAll` / `parallelSetAll` |
+| Parallel cumulative sum | `parallelPrefix` |
+| Use with the Stream API | `stream` |
 
 ---
 
-# What is Bytecode?
-
-Bytecode is an intermediate language.
-
-It is **not** specific to:
-
-- Windows
-- Linux
-- macOS
-
-Instead, it is a standardized instruction set understood by the **Java Virtual Machine (JVM)**.
-
----
-
-# What is the JVM?
-
-**JVM** stands for:
-
-> **Java Virtual Machine**
-
-The JVM is software installed on the operating system.
-
-Each platform has its own implementation.
-
-```
-Windows
-    │
-    ▼
-Windows JVM
-```
-
-```
-Linux
-   │
-   ▼
-Linux JVM
-```
-
-```
-macOS
-   │
-   ▼
-macOS JVM
-```
-
-The JVM translates Java Bytecode into native machine code that the processor understands.
-
-Because each operating system has its own JVM, the **same `.class` file** can run on multiple platforms.
-
----
-
-# Complete Execution Flow
-
-```
-Java Source Code (.java)
-          │
-          ▼
-      javac Compiler
-          │
-          ▼
-   Bytecode (.class)
-          │
-          ▼
-          JVM
-          │
-          ▼
-   Machine Code
-          │
-          ▼
-        CPU
-```
-
----
-
-# What is the JDK?
-
-**JDK** stands for:
-
-> **Java Development Kit**
-
-It is the complete toolkit used to develop Java applications.
-
-It includes:
-
-- Java Compiler (`javac`)
-- JVM
-- Java Standard Library
-- Development tools
-    - `jar`
-    - `javadoc`
-    - `jdb`
-    - and many others
-
-Without the JDK, you cannot create Java applications.
-
----
-
-# What is the JRE?
-
-**JRE** stands for:
-
-> **Java Runtime Environment**
-
-The JRE contains only what is needed to **run** Java applications:
-
-- JVM
-- Java libraries
-
-It **does not** include the Java compiler (`javac`).
-
-Modern Java releases package everything inside the JDK, and standalone JRE distributions are no longer commonly provided.
-
----
-
-# JDK vs JRE vs JVM
-
-```
-JDK
-│
-├── javac
-├── Development Tools
-└── JRE
-     │
-     ├── Java Libraries
-     └── JVM
-```
-
-Or simply:
-
-```
-JDK
- │
- ▼
-JRE
- │
- ▼
-JVM
-```
-
----
-
-# Why Did Java Become So Popular?
-
-Java introduced many features that made software development easier and safer.
-
-- Object-Oriented Programming (OOP)
-- Automatic memory management (Garbage Collector)
-- Strong static typing
-- Platform independence
-- Built-in security checks
-- Large standard library
-- Native multithreading support
-- High performance through **Just-In-Time (JIT)** compilation
-
----
-
-# The JVM Does More Than Ensure Portability
-
-Besides executing Bytecode, the JVM is responsible for:
-
-- Memory management
-- Garbage Collection
-- Dynamic class loading (Class Loader)
-- Bytecode verification
-- Runtime optimization using the JIT compiler
-- Abstracting differences between operating systems and hardware architectures
-
----
-
-# Summary
-
-| Concept | Description |
-|----------|-------------|
-| **Java** | A programming language designed to be portable, secure, and object-oriented. |
-| **Source Code (.java)** | Code written by the programmer. |
-| **Compiler (`javac`)** | Converts Java source code into Bytecode. |
-| **Bytecode (.class)** | Platform-independent intermediate code. |
-| **JVM** | Executes Bytecode by translating it into machine code. |
-| **JRE** | Runtime environment required to execute Java applications. |
-| **JDK** | Complete development kit containing the compiler, tools, libraries, and JVM. |
-
----
-
-# Key Takeaways
-
-- Java was created in **1991** by **Sun Microsystems**.
-- It was originally designed for smart electronic devices.
-- It became popular with the growth of the Internet.
-- Java's biggest innovation was **platform independence**.
-- Programs are compiled into **Bytecode**, not machine code.
-- The **JVM** enables the same application to run on different operating systems.
-- The **JDK** is used to develop Java applications.
-- The **JRE** provides the environment needed to run Java applications.
-- The JVM also manages memory, performs security checks, and optimizes execution using the **Just-In-Time (JIT)** compiler.
+*Source: Oracle's official Java SE 8 documentation (`java.util.Arrays`). Content reorganized and rewritten in guide format — consult the official Oracle documentation for the full details of every method signature and exception.*
