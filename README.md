@@ -1,368 +1,190 @@
+# What Is a Class?
 
-    ██████╗ ███████╗███████╗██████╗     ██████╗ ██╗██╗   ██╗███████╗
-    ██╔══██╗██╔════╝██╔════╝██╔══██╗    ██╔══██╗██║██║   ██║██╔════╝
-    ██║  ██║█████╗  █████╗  ██████╔╝    ██║  ██║██║██║   ██║█████╗  
-    ██║  ██║██╔══╝  ██╔══╝  ██╔         ██║  ██║██║╚██╗ ██╔╝██╔══╝  
-    ██████╔╝███████╗███████╗██║         ██████╔╝██║ ╚████╔╝ ███████╗
-    ╚═════╝ ╚══════╝╚══════╝╚═╝         ╚═════╝ ╚═╝  ╚═══╝  ╚══════╝
+A **class** is a **blueprint** used to create objects.
 
-                        ██╗ █████╗ ██╗   ██╗ █████╗  
-                        ██║██╔══██╗██║   ██║██╔══██╗   
-                        ██║███████║██║   ██║███████║   
-                    ██╗ ██║██╔══██║╚██╗ ██╔╝██╔══██║   
-                    ╚████╔╝██║  ██║ ╚████╔╝ ██║  ██║
-                    ╚═══╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝      
+Think about bicycles in the real world. There may be thousands of bicycles with the same make and model. Although they are different physical bicycles, they were all built from the same blueprint.
 
+In Object-Oriented Programming:
 
-# Java History and Fundamentals
+- **Class** → Blueprint
+- **Object** → Instance created from that blueprint
 
-## Before Java
-
-In the early 1990s, most software was written using languages such as:
-
-- C
-- C++
-
-Although these languages were extremely fast, they had several drawbacks:
-
-- Programs had to be compiled separately for each operating system.
-- An application compiled for Windows would not run on Linux or macOS.
-- Developers had to manually manage memory, which often led to issues such as:
-    - Memory leaks
-    - Buffer overflows
-    - Invalid pointers
-- Building and maintaining large software systems was difficult.
-
-At the same time, smart electronic devices such as TVs, set-top boxes, and household appliances were becoming more common. Each device had different hardware, making software development even more challenging.
-
-Sun Microsystems recognized the need for a programming language capable of running on different types of devices without requiring major changes.
+Your bicycle is an **instance** of the `Bicycle` class.
 
 ---
 
-# The Birth of Java
-
-In **1991**, **Sun Microsystems** launched a research initiative called the **Green Project**.
-
-The project was led by **James Gosling**.
-
-Initially, the goal was **not** to build a language for the Internet.
-
-Instead, the team wanted to create software for intelligent consumer devices such as:
-
-- Televisions
-- Remote controls
-- Home appliances
-
-The team designed a new programming language called **Oak**, named after an oak tree outside Gosling's office.
-
-Later, they discovered that the name **Oak** had already been trademarked.
-
-The language was then renamed **Java**, inspired by the Java coffee consumed by the development team.
-
----
-
-# The Rise of the Internet
-
-A few years later, the Internet began expanding rapidly.
-
-The Green Project team realized that their language was perfectly suited for networked and distributed applications.
-
-In **1995**, Java was officially released.
-
-Its famous slogan became:
-
-> **Write Once, Run Anywhere (WORA)**
-
-Meaning:
-
-> Write your program once and run it on any platform.
-
-This became Java's greatest advantage.
-
----
-
-# What Problem Did Java Solve?
-
-Before Java, software had to be compiled separately for every operating system.
-
-### Example
-
-```
-C++ Program
-      │
-      ▼
-Compile for Windows
-      │
-      ▼
-Runs only on Windows
-```
-
-To run the same application elsewhere:
-
-```
-Compile again for Linux
-        ▼
-Linux Executable
-```
-
-```
-Compile again for macOS
-        ▼
-macOS Executable
-```
-
-Developers had to maintain multiple versions of the same software.
-
----
-
-Java introduced a different approach.
-
-```
-Java Source Code
-        │
-        ▼
-Compile Once
-        │
-        ▼
-Bytecode (.class)
-        │
-        ▼
-Runs on any computer with a JVM
-```
-
-This concept is known as **platform independence** or **portability**.
-
----
-
-# How Java Works
-
-Java execution happens in several stages.
-
-## 1. Write the Source Code
+# Example: Bicycle Class
 
 ```java
-public class Main {
+class Bicycle {
 
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
+  int cadence = 0;
+  int speed = 0;
+  int gear = 1;
 
+  void changeCadence(int newValue) {
+    cadence = newValue;
+  }
+
+  void changeGear(int newValue) {
+    gear = newValue;
+  }
+
+  void speedUp(int increment) {
+    speed = speed + increment;
+  }
+
+  void applyBrakes(int decrement) {
+    speed = speed - decrement;
+  }
+
+  void printStates() {
+    System.out.println(
+            "cadence:" + cadence +
+                    " speed:" + speed +
+                    " gear:" + gear
+    );
+  }
 }
 ```
 
 ---
 
-## 2. Compile the Code
+# Understanding the Class
 
-The Java compiler (`javac`) converts the source code into **Bytecode**.
+The `Bicycle` class contains two main parts:
 
-```
-Main.java
-     │
-     ▼
- javac
-     │
-     ▼
-Main.class
-```
+## Fields (State)
 
-The `.class` file **does not contain machine code**.
+These variables store the object's data.
 
-Instead, it contains **Bytecode**.
+| Field | Description |
+|--------|-------------|
+| `cadence` | Current pedal cadence |
+| `speed` | Current speed |
+| `gear` | Current gear |
+
+These fields represent the **state** of the bicycle.
 
 ---
 
-# What is Bytecode?
+## Methods (Behavior)
 
-Bytecode is an intermediate language.
+Methods define what the object can do.
 
-It is **not** specific to:
+| Method | Purpose |
+|---------|---------|
+| `changeCadence()` | Changes the pedal cadence |
+| `changeGear()` | Changes the current gear |
+| `speedUp()` | Increases the speed |
+| `applyBrakes()` | Decreases the speed |
+| `printStates()` | Displays the bicycle's current state |
 
-- Windows
-- Linux
-- macOS
-
-Instead, it is a standardized instruction set understood by the **Java Virtual Machine (JVM)**.
-
----
-
-# What is the JVM?
-
-**JVM** stands for:
-
-> **Java Virtual Machine**
-
-The JVM is software installed on the operating system.
-
-Each platform has its own implementation.
-
-```
-Windows
-    │
-    ▼
-Windows JVM
-```
-
-```
-Linux
-   │
-   ▼
-Linux JVM
-```
-
-```
-macOS
-   │
-   ▼
-macOS JVM
-```
-
-The JVM translates Java Bytecode into native machine code that the processor understands.
-
-Because each operating system has its own JVM, the **same `.class` file** can run on multiple platforms.
+These methods represent the **behavior** of the bicycle.
 
 ---
 
-# Complete Execution Flow
+# Why Doesn't This Class Have a `main()` Method?
 
-```
-Java Source Code (.java)
-          │
-          ▼
-      javac Compiler
-          │
-          ▼
-   Bytecode (.class)
-          │
-          ▼
-          JVM
-          │
-          ▼
-   Machine Code
-          │
-          ▼
-        CPU
+The `Bicycle` class is **not a complete application**.
+
+Its only purpose is to describe what a bicycle is and what it can do.
+
+Creating and using `Bicycle` objects is the responsibility of another class.
+
+---
+
+# Creating Objects
+
+The following class creates and uses two different `Bicycle` objects.
+
+```java
+class BicycleDemo {
+
+  public static void main(String[] args) {
+
+    // Create two Bicycle objects
+    Bicycle bike1 = new Bicycle();
+    Bicycle bike2 = new Bicycle();
+
+    // Modify bike1
+    bike1.changeCadence(50);
+    bike1.speedUp(10);
+    bike1.changeGear(2);
+    bike1.printStates();
+
+    // Modify bike2
+    bike2.changeCadence(50);
+    bike2.speedUp(10);
+    bike2.changeGear(2);
+
+    bike2.changeCadence(40);
+    bike2.speedUp(10);
+    bike2.changeGear(3);
+
+    bike2.printStates();
+  }
+}
 ```
 
 ---
 
-# What is the JDK?
+# What's Happening?
 
-**JDK** stands for:
+### Step 1 — Create Two Objects
 
-> **Java Development Kit**
-
-It is the complete toolkit used to develop Java applications.
-
-It includes:
-
-- Java Compiler (`javac`)
-- JVM
-- Java Standard Library
-- Development tools
-    - `jar`
-    - `javadoc`
-    - `jdb`
-    - and many others
-
-Without the JDK, you cannot create Java applications.
-
----
-
-# What is the JRE?
-
-**JRE** stands for:
-
-> **Java Runtime Environment**
-
-The JRE contains only what is needed to **run** Java applications:
-
-- JVM
-- Java libraries
-
-It **does not** include the Java compiler (`javac`).
-
-Modern Java releases package everything inside the JDK, and standalone JRE distributions are no longer commonly provided.
-
----
-
-# JDK vs JRE vs JVM
-
-```
-JDK
-│
-├── javac
-├── Development Tools
-└── JRE
-     │
-     ├── Java Libraries
-     └── JVM
+```java
+Bicycle bike1 = new Bicycle();
+Bicycle bike2 = new Bicycle();
 ```
 
-Or simply:
+Although both objects come from the same class, they are **independent**.
 
+Changing one object does **not** affect the other.
+
+---
+
+### Step 2 — Change Their State
+
+Methods modify each bicycle's internal data.
+
+For example:
+
+```java
+bike1.speedUp(10);
 ```
-JDK
- │
- ▼
-JRE
- │
- ▼
-JVM
+
+changes only `bike1`.
+
+It does **not** change `bike2`.
+
+---
+
+### Step 3 — Print Their State
+
+```java
+bike1.printStates();
+bike2.printStates();
 ```
 
----
+Output:
 
-# Why Did Java Become So Popular?
+```text
+cadence:50 speed:10 gear:2
+cadence:40 speed:20 gear:3
+```
 
-Java introduced many features that made software development easier and safer.
-
-- Object-Oriented Programming (OOP)
-- Automatic memory management (Garbage Collector)
-- Strong static typing
-- Platform independence
-- Built-in security checks
-- Large standard library
-- Native multithreading support
-- High performance through **Just-In-Time (JIT)** compilation
-
----
-
-# The JVM Does More Than Ensure Portability
-
-Besides executing Bytecode, the JVM is responsible for:
-
-- Memory management
-- Garbage Collection
-- Dynamic class loading (Class Loader)
-- Bytecode verification
-- Runtime optimization using the JIT compiler
-- Abstracting differences between operating systems and hardware architectures
-
----
-
-# Summary
-
-| Concept | Description |
-|----------|-------------|
-| **Java** | A programming language designed to be portable, secure, and object-oriented. |
-| **Source Code (.java)** | Code written by the programmer. |
-| **Compiler (`javac`)** | Converts Java source code into Bytecode. |
-| **Bytecode (.class)** | Platform-independent intermediate code. |
-| **JVM** | Executes Bytecode by translating it into machine code. |
-| **JRE** | Runtime environment required to execute Java applications. |
-| **JDK** | Complete development kit containing the compiler, tools, libraries, and JVM. |
+Notice that each object stores its own values, even though they were created from the same class.
 
 ---
 
 # Key Takeaways
 
-- Java was created in **1991** by **Sun Microsystems**.
-- It was originally designed for smart electronic devices.
-- It became popular with the growth of the Internet.
-- Java's biggest innovation was **platform independence**.
-- Programs are compiled into **Bytecode**, not machine code.
-- The **JVM** enables the same application to run on different operating systems.
-- The **JDK** is used to develop Java applications.
-- The **JRE** provides the environment needed to run Java applications.
-- The JVM also manages memory, performs security checks, and optimizes execution using the **Just-In-Time (JIT)** compiler.
+- A **class** is a blueprint for creating objects.
+- An **object** is an instance of a class.
+- A class defines:
+  - **Fields** (state)
+  - **Methods** (behavior)
+- Multiple objects created from the same class have their own independent state.
+- A class doesn't need a `main()` method unless it is intended to be the application's entry point.
+```
