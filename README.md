@@ -1,190 +1,133 @@
-# What Is a Class?
+## What Is Inheritance?
 
-A **class** is a **blueprint** used to create objects.
+Different kinds of objects often have a certain amount in common with each other. Mountain bikes, road bikes, and tandem bikes, for example, all share the characteristics of bicycles (current speed, current pedal cadence, current gear). Yet each also defines additional features that make them different: tandem bicycles have two seats and two sets of handlebars; road bikes have drop handlebars; some mountain bikes have an additional chain ring, giving them a lower gear ratio.
 
-Think about bicycles in the real world. There may be thousands of bicycles with the same make and model. Although they are different physical bicycles, they were all built from the same blueprint.
+Object-oriented programming allows classes to inherit commonly used state and behavior from other classes.
 
-In Object-Oriented Programming:
+In this example, `Bicycle` becomes the superclass of `MountainBicycle`. The subclass inherits all the fields and methods from the superclass, while adding its own features.
 
-- **Class** → Blueprint
-- **Object** → Instance created from that blueprint
-
-Your bicycle is an **instance** of the `Bicycle` class.
-
----
-
-# Example: Bicycle Class
+The syntax for creating a subclass is simple:
 
 ```java
-class Bicycle {
+class MountainBicycle extends Bicycle {
 
-  int cadence = 0;
-  int speed = 0;
-  int gear = 1;
+    // New fields and methods defining
+    // a mountain bike would go here
 
-  void changeCadence(int newValue) {
-    cadence = newValue;
-  }
-
-  void changeGear(int newValue) {
-    gear = newValue;
-  }
-
-  void speedUp(int increment) {
-    speed = speed + increment;
-  }
-
-  void applyBrakes(int decrement) {
-    speed = speed - decrement;
-  }
-
-  void printStates() {
-    System.out.println(
-            "cadence:" + cadence +
-                    " speed:" + speed +
-                    " gear:" + gear
-    );
-  }
 }
 ```
 
----
+This gives `MountainBicycle` all the same fields and methods as `Bicycle`, while allowing its code to focus exclusively on the features that make it unique.
 
-# Understanding the Class
-
-The `Bicycle` class contains two main parts:
-
-## Fields (State)
-
-These variables store the object's data.
-
-| Field | Description |
-|--------|-------------|
-| `cadence` | Current pedal cadence |
-| `speed` | Current speed |
-| `gear` | Current gear |
-
-These fields represent the **state** of the bicycle.
+> In Java, a class can extend only **one** direct superclass.
 
 ---
 
-## Methods (Behavior)
+## Example
 
-Methods define what the object can do.
-
-| Method | Purpose |
-|---------|---------|
-| `changeCadence()` | Changes the pedal cadence |
-| `changeGear()` | Changes the current gear |
-| `speedUp()` | Increases the speed |
-| `applyBrakes()` | Decreases the speed |
-| `printStates()` | Displays the bicycle's current state |
-
-These methods represent the **behavior** of the bicycle.
-
----
-
-# Why Doesn't This Class Have a `main()` Method?
-
-The `Bicycle` class is **not a complete application**.
-
-Its only purpose is to describe what a bicycle is and what it can do.
-
-Creating and using `Bicycle` objects is the responsibility of another class.
-
----
-
-# Creating Objects
-
-The following class creates and uses two different `Bicycle` objects.
+### `Main.java`
 
 ```java
-class BicycleDemo {
+package ao.morgado;
 
-  public static void main(String[] args) {
+import ao.morgado.features.bicycle.MountainBicycle;
 
-    // Create two Bicycle objects
-    Bicycle bike1 = new Bicycle();
-    Bicycle bike2 = new Bicycle();
+public class Main {
 
-    // Modify bike1
-    bike1.changeCadence(50);
-    bike1.speedUp(10);
-    bike1.changeGear(2);
-    bike1.printStates();
+    public static void main(String[] args) {
 
-    // Modify bike2
-    bike2.changeCadence(50);
-    bike2.speedUp(10);
-    bike2.changeGear(2);
+        System.out.println("Hello World, I'm doing a review of Java fundamentals!");
 
-    bike2.changeCadence(40);
-    bike2.speedUp(10);
-    bike2.changeGear(3);
+        // OOP - Inheritance
 
-    bike2.printStates();
-  }
+        MountainBicycle mountainBicycle = new MountainBicycle();
+
+        mountainBicycle.setSpeed(10);
+        mountainBicycle.setGear(1);
+        mountainBicycle.setSeatHeight(25);
+
+        mountainBicycle.printStates();
+    }
 }
 ```
 
----
-
-# What's Happening?
-
-### Step 1 — Create Two Objects
+### `Bicycle.java`
 
 ```java
-Bicycle bike1 = new Bicycle();
-Bicycle bike2 = new Bicycle();
+package ao.morgado.features.bicycle;
+
+public class Bicycle {
+
+    int gear;
+    int cadence;
+    int speed;
+
+    public void setSpeed(int newValue) {
+        this.speed = newValue;
+    }
+
+    public void setGear(int newValue) {
+        this.gear = newValue;
+    }
+
+    public void printStates() {
+        System.out.println("Speed: " + speed);
+        System.out.println("Gear: " + gear);
+    }
+}
 ```
 
-Although both objects come from the same class, they are **independent**.
-
-Changing one object does **not** affect the other.
-
----
-
-### Step 2 — Change Their State
-
-Methods modify each bicycle's internal data.
-
-For example:
+### `MountainBicycle.java`
 
 ```java
-bike1.speedUp(10);
+package ao.morgado.features.bicycle;
+
+public class MountainBicycle extends Bicycle {
+
+    int seatHeight;
+
+    public void setSeatHeight(int newValue) {
+        this.seatHeight = newValue;
+    }
+
+    @Override
+    public void printStates() {
+        super.printStates();
+        System.out.println("Seat Height: " + seatHeight);
+    }
+}
 ```
 
-changes only `bike1`.
-
-It does **not** change `bike2`.
-
----
-
-### Step 3 — Print Their State
-
-```java
-bike1.printStates();
-bike2.printStates();
-```
-
-Output:
+### Output
 
 ```text
-cadence:50 speed:10 gear:2
-cadence:40 speed:20 gear:3
+Speed: 10
+Gear: 1
+Seat Height: 25
 ```
-
-Notice that each object stores its own values, even though they were created from the same class.
 
 ---
 
-# Key Takeaways
+## Understanding the Example
 
-- A **class** is a blueprint for creating objects.
-- An **object** is an instance of a class.
-- A class defines:
-  - **Fields** (state)
-  - **Methods** (behavior)
-- Multiple objects created from the same class have their own independent state.
-- A class doesn't need a `main()` method unless it is intended to be the application's entry point.
+- `MountainBicycle` **extends** `Bicycle`, inheriting all of its fields and methods.
+- `setSpeed()` and `setGear()` are inherited from `Bicycle`.
+- `seatHeight` and `setSeatHeight()` are defined only in `MountainBicycle`.
+- `printStates()` is **overridden** in `MountainBicycle` to include the new `seatHeight` field.
+- `super.printStates()` calls the implementation from the superclass (`Bicycle`), avoiding duplicated code.
+
+---
+
+## `@Override`
+
+The `@Override` annotation tells the compiler that the method is intended to override a method from the superclass.
+
+```java
+@Override
+public void printStates() {
+    super.printStates();
+    System.out.println("Seat Height: " + seatHeight);
+}
 ```
+
+Using `@Override` is considered a best practice because it helps the compiler detect mistakes, such as misspelled method names or incorrect method signatures.
