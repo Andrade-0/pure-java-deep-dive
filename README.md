@@ -1,368 +1,124 @@
+# Controlling Access to Members of a Class
 
-    ██████╗ ███████╗███████╗██████╗     ██████╗ ██╗██╗   ██╗███████╗
-    ██╔══██╗██╔════╝██╔════╝██╔══██╗    ██╔══██╗██║██║   ██║██╔════╝
-    ██║  ██║█████╗  █████╗  ██████╔╝    ██║  ██║██║██║   ██║█████╗  
-    ██║  ██║██╔══╝  ██╔══╝  ██╔         ██║  ██║██║╚██╗ ██╔╝██╔══╝  
-    ██████╔╝███████╗███████╗██║         ██████╔╝██║ ╚████╔╝ ███████╗
-    ╚═════╝ ╚══════╝╚══════╝╚═╝         ╚═════╝ ╚═╝  ╚═══╝  ╚══════╝
+Access level modifiers determine whether other classes can use a particular field or invoke a particular method.
 
-                        ██╗ █████╗ ██╗   ██╗ █████╗  
-                        ██║██╔══██╗██║   ██║██╔══██╗   
-                        ██║███████║██║   ██║███████║   
-                    ██╗ ██║██╔══██║╚██╗ ██╔╝██╔══██║   
-                    ╚████╔╝██║  ██║ ╚████╔╝ ██║  ██║
-                    ╚═══╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝      
+There are **two levels of access control**:
 
+## Top-Level Access
 
-# Java History and Fundamentals
+- `public`
+- **package-private** (no explicit modifier)
 
-## Before Java
+A class declared as `public` is visible to **all classes**.
 
-In the early 1990s, most software was written using languages such as:
+If a class has **no modifier** (the default, also known as **package-private**), it is visible **only within its own package**.
 
-- C
-- C++
-
-Although these languages were extremely fast, they had several drawbacks:
-
-- Programs had to be compiled separately for each operating system.
-- An application compiled for Windows would not run on Linux or macOS.
-- Developers had to manually manage memory, which often led to issues such as:
-    - Memory leaks
-    - Buffer overflows
-    - Invalid pointers
-- Building and maintaining large software systems was difficult.
-
-At the same time, smart electronic devices such as TVs, set-top boxes, and household appliances were becoming more common. Each device had different hardware, making software development even more challenging.
-
-Sun Microsystems recognized the need for a programming language capable of running on different types of devices without requiring major changes.
+> **Note:** A package is a named group of related classes.
 
 ---
 
-# The Birth of Java
+## Member-Level Access
 
-In **1991**, **Sun Microsystems** launched a research initiative called the **Green Project**.
+At the member level (fields, methods, constructors, and nested classes), you can use:
 
-The project was led by **James Gosling**.
+- `public`
+- `protected`
+- `private`
+- **package-private** (no explicit modifier)
 
-Initially, the goal was **not** to build a language for the Internet.
+### `public`
 
-Instead, the team wanted to create software for intelligent consumer devices such as:
+The member can be accessed from **any class**.
 
-- Televisions
-- Remote controls
-- Home appliances
+### `private`
 
-The team designed a new programming language called **Oak**, named after an oak tree outside Gosling's office.
+The member can only be accessed **inside its own class**.
 
-Later, they discovered that the name **Oak** had already been trademarked.
+### `protected`
 
-The language was then renamed **Java**, inspired by the Java coffee consumed by the development team.
+The member can be accessed:
 
----
+- Within its own package.
+- By subclasses, even if they are in a different package.
 
-# The Rise of the Internet
+### Package-Private (Default)
 
-A few years later, the Internet began expanding rapidly.
-
-The Green Project team realized that their language was perfectly suited for networked and distributed applications.
-
-In **1995**, Java was officially released.
-
-Its famous slogan became:
-
-> **Write Once, Run Anywhere (WORA)**
-
-Meaning:
-
-> Write your program once and run it on any platform.
-
-This became Java's greatest advantage.
+If no modifier is specified, the member is accessible **only within the same package**.
 
 ---
 
-# What Problem Did Java Solve?
+# Access Levels
 
-Before Java, software had to be compiled separately for every operating system.
+| Modifier | Class | Package | Subclass | World |
+|----------|:-----:|:-------:|:--------:|:-----:|
+| `public` | ✅ | ✅ | ✅ | ✅ |
+| `protected` | ✅ | ✅ | ✅ | ❌ |
+| *(no modifier)* | ✅ | ✅ | ❌ | ❌ |
+| `private` | ✅ | ❌ | ❌ | ❌ |
 
-### Example
+### Column Meaning
 
-```
-C++ Program
-      │
-      ▼
-Compile for Windows
-      │
-      ▼
-Runs only on Windows
-```
+| Column | Description |
+|---------|-------------|
+| **Class** | The class itself can access the member. |
+| **Package** | Any class in the same package can access the member. |
+| **Subclass** | A subclass in another package can access the member. |
+| **World** | Any class anywhere can access the member. |
 
-To run the same application elsewhere:
-
-```
-Compile again for Linux
-        ▼
-Linux Executable
-```
-
-```
-Compile again for macOS
-        ▼
-macOS Executable
-```
-
-Developers had to maintain multiple versions of the same software.
+A class always has access to its own members.
 
 ---
 
-Java introduced a different approach.
+# Why Access Levels Matter
 
-```
-Java Source Code
-        │
-        ▼
-Compile Once
-        │
-        ▼
-Bytecode (.class)
-        │
-        ▼
-Runs on any computer with a JVM
-```
+Access modifiers affect your code in two important ways.
 
-This concept is known as **platform independence** or **portability**.
+## 1. Using Existing Classes
 
----
+When using classes from external libraries (such as the Java Platform), access modifiers determine **which members your code can access**.
 
-# How Java Works
+## 2. Designing Your Own Classes
 
-Java execution happens in several stages.
+When creating your own classes, you should decide the appropriate access level for every:
 
-## 1. Write the Source Code
+- Field
+- Method
+- Constructor
+- Nested class
 
-```java
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
-
-}
-```
+Choosing the correct access level helps protect your implementation and makes your API easier to use correctly.
 
 ---
 
-## 2. Compile the Code
+# Visibility Example
 
-The Java compiler (`javac`) converts the source code into **Bytecode**.
+Suppose we have the following classes:
 
-```
-Main.java
-     │
-     ▼
- javac
-     │
-     ▼
-Main.class
-```
+- `Alpha`
+- `Beta`
+- `AlphaSub`
+- `Gamma`
 
-The `.class` file **does not contain machine code**.
+The visibility of `Alpha` members depends on the modifier used.
 
-Instead, it contains **Bytecode**.
-
----
-
-# What is Bytecode?
-
-Bytecode is an intermediate language.
-
-It is **not** specific to:
-
-- Windows
-- Linux
-- macOS
-
-Instead, it is a standardized instruction set understood by the **Java Virtual Machine (JVM)**.
+| Modifier | Alpha | Beta | AlphaSub | Gamma |
+|----------|:-----:|:----:|:--------:|:-----:|
+| `public` | ✅ | ✅ | ✅ | ✅ |
+| `protected` | ✅ | ✅ | ✅ | ❌ |
+| *(no modifier)* | ✅ | ✅ | ❌ | ❌ |
+| `private` | ✅ | ❌ | ❌ | ❌ |
 
 ---
 
-# What is the JVM?
+# Best Practices
 
-**JVM** stands for:
+✔ Use the **most restrictive access level** that still allows your code to work.
 
-> **Java Virtual Machine**
+In general:
 
-The JVM is software installed on the operating system.
+- Prefer `private` unless there is a good reason to expose a member.
+- Avoid `public` fields (except for constants).
+- Public fields tightly couple users of your class to its implementation, making future changes more difficult.
+- Exposing behavior through methods instead of fields provides greater flexibility and better encapsulation.
 
-Each platform has its own implementation.
-
-```
-Windows
-    │
-    ▼
-Windows JVM
-```
-
-```
-Linux
-   │
-   ▼
-Linux JVM
-```
-
-```
-macOS
-   │
-   ▼
-macOS JVM
-```
-
-The JVM translates Java Bytecode into native machine code that the processor understands.
-
-Because each operating system has its own JVM, the **same `.class` file** can run on multiple platforms.
-
----
-
-# Complete Execution Flow
-
-```
-Java Source Code (.java)
-          │
-          ▼
-      javac Compiler
-          │
-          ▼
-   Bytecode (.class)
-          │
-          ▼
-          JVM
-          │
-          ▼
-   Machine Code
-          │
-          ▼
-        CPU
-```
-
----
-
-# What is the JDK?
-
-**JDK** stands for:
-
-> **Java Development Kit**
-
-It is the complete toolkit used to develop Java applications.
-
-It includes:
-
-- Java Compiler (`javac`)
-- JVM
-- Java Standard Library
-- Development tools
-    - `jar`
-    - `javadoc`
-    - `jdb`
-    - and many others
-
-Without the JDK, you cannot create Java applications.
-
----
-
-# What is the JRE?
-
-**JRE** stands for:
-
-> **Java Runtime Environment**
-
-The JRE contains only what is needed to **run** Java applications:
-
-- JVM
-- Java libraries
-
-It **does not** include the Java compiler (`javac`).
-
-Modern Java releases package everything inside the JDK, and standalone JRE distributions are no longer commonly provided.
-
----
-
-# JDK vs JRE vs JVM
-
-```
-JDK
-│
-├── javac
-├── Development Tools
-└── JRE
-     │
-     ├── Java Libraries
-     └── JVM
-```
-
-Or simply:
-
-```
-JDK
- │
- ▼
-JRE
- │
- ▼
-JVM
-```
-
----
-
-# Why Did Java Become So Popular?
-
-Java introduced many features that made software development easier and safer.
-
-- Object-Oriented Programming (OOP)
-- Automatic memory management (Garbage Collector)
-- Strong static typing
-- Platform independence
-- Built-in security checks
-- Large standard library
-- Native multithreading support
-- High performance through **Just-In-Time (JIT)** compilation
-
----
-
-# The JVM Does More Than Ensure Portability
-
-Besides executing Bytecode, the JVM is responsible for:
-
-- Memory management
-- Garbage Collection
-- Dynamic class loading (Class Loader)
-- Bytecode verification
-- Runtime optimization using the JIT compiler
-- Abstracting differences between operating systems and hardware architectures
-
----
-
-# Summary
-
-| Concept | Description |
-|----------|-------------|
-| **Java** | A programming language designed to be portable, secure, and object-oriented. |
-| **Source Code (.java)** | Code written by the programmer. |
-| **Compiler (`javac`)** | Converts Java source code into Bytecode. |
-| **Bytecode (.class)** | Platform-independent intermediate code. |
-| **JVM** | Executes Bytecode by translating it into machine code. |
-| **JRE** | Runtime environment required to execute Java applications. |
-| **JDK** | Complete development kit containing the compiler, tools, libraries, and JVM. |
-
----
-
-# Key Takeaways
-
-- Java was created in **1991** by **Sun Microsystems**.
-- It was originally designed for smart electronic devices.
-- It became popular with the growth of the Internet.
-- Java's biggest innovation was **platform independence**.
-- Programs are compiled into **Bytecode**, not machine code.
-- The **JVM** enables the same application to run on different operating systems.
-- The **JDK** is used to develop Java applications.
-- The **JRE** provides the environment needed to run Java applications.
-- The JVM also manages memory, performs security checks, and optimizes execution using the **Just-In-Time (JIT)** compiler.
+> **Rule of thumb:** Start with `private` and only increase visibility when necessary.
