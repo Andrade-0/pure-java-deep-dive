@@ -43,7 +43,7 @@ public class AnywhereRestClient {
         };
     }
 
-    void requestExternalHost () {} // access: class and packages
+    void requestExternalHost2 () {} // access: class and packages
 
     public void requestExternalHost (String host) {} // access: class, package, subclass and world
 }
