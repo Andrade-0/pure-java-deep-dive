@@ -1,7 +1,5 @@
 package ao.morgado.features.Bicycle;
 
-import ao.morgado.features.Bicycle;
-
 public class MountainBicycle extends Bicycle {
 
     @Override
