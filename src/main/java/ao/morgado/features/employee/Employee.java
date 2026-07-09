@@ -4,9 +4,9 @@ public class Employee {
 
     private String name;
     private String employeeId;
-    private Integer salary;
+    private double salary;
 
-    public Employee(String name, String employeeId, Integer salary) {
+    public Employee(String name, String employeeId, double salary) {
         this.name = name;
         this.employeeId = employeeId;
         this.salary = salary;
@@ -16,7 +16,7 @@ public class Employee {
 
     public String getEmployeeId() { return employeeId; }
 
-    public Integer getSalary() { return salary; }
+    public double getSalary() { return salary; }
 
     @Override
     public String toString() {
