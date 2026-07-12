@@ -4,7 +4,8 @@ import ao.morgado.bootstrapper.db.Repository;
 
 import java.util.List;
 
-public class UserService implements Repository<UserData, String> {
+public class UserService
+        implements Repository<UserData, String> {
 
     @Override
     public UserData findById(String id) {
@@ -12,7 +13,7 @@ public class UserService implements Repository<UserData, String> {
     }
 
     @Override
-    public List<UserData> findAll() {
+    public List<UserData> fetchAll() {
         return null;
     }
 

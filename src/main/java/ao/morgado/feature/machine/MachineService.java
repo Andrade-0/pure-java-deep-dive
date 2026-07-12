@@ -14,7 +14,7 @@ public class MachineService
     }
 
     @Override
-    public List<MachineData> findAll() {
+    public List<MachineData> fetchAll() {
         return List.of();
     }
 
