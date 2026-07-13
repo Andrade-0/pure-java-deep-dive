@@ -1,368 +1,206 @@
+# Java Exceptions Cheat Sheet
 
-    ██████╗ ███████╗███████╗██████╗     ██████╗ ██╗██╗   ██╗███████╗
-    ██╔══██╗██╔════╝██╔════╝██╔══██╗    ██╔══██╗██║██║   ██║██╔════╝
-    ██║  ██║█████╗  █████╗  ██████╔╝    ██║  ██║██║██║   ██║█████╗  
-    ██║  ██║██╔══╝  ██╔══╝  ██╔         ██║  ██║██║╚██╗ ██╔╝██╔══╝  
-    ██████╔╝███████╗███████╗██║         ██████╔╝██║ ╚████╔╝ ███████╗
-    ╚═════╝ ╚══════╝╚══════╝╚═╝         ╚═════╝ ╚═╝  ╚═══╝  ╚══════╝
+## What is an Exception?
 
-                        ██╗ █████╗ ██╗   ██╗ █████╗  
-                        ██║██╔══██╗██║   ██║██╔══██╗   
-                        ██║███████║██║   ██║███████║   
-                    ██╗ ██║██╔══██║╚██╗ ██╔╝██╔══██║   
-                    ╚████╔╝██║  ██║ ╚████╔╝ ██║  ██║
-                    ╚═══╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝      
+An **exception** is an event that interrupts the normal flow of a program during execution. Exceptions are used to represent errors or unexpected situations that can occur while a program is running.
 
+Examples:
 
-# Java History and Fundamentals
-
-## Before Java
-
-In the early 1990s, most software was written using languages such as:
-
-- C
-- C++
-
-Although these languages were extremely fast, they had several drawbacks:
-
-- Programs had to be compiled separately for each operating system.
-- An application compiled for Windows would not run on Linux or macOS.
-- Developers had to manually manage memory, which often led to issues such as:
-    - Memory leaks
-    - Buffer overflows
-    - Invalid pointers
-- Building and maintaining large software systems was difficult.
-
-At the same time, smart electronic devices such as TVs, set-top boxes, and household appliances were becoming more common. Each device had different hardware, making software development even more challenging.
-
-Sun Microsystems recognized the need for a programming language capable of running on different types of devices without requiring major changes.
+* Dividing by zero
+* Reading a file that doesn't exist
+* Accessing an invalid array index
+* Passing an invalid argument to a method
 
 ---
 
-# The Birth of Java
+# Exception Hierarchy
 
-In **1991**, **Sun Microsystems** launched a research initiative called the **Green Project**.
+```text
+                 Throwable
+                /         \
+            Error       Exception
+                           |
+                    RuntimeException
+```
 
-The project was led by **James Gosling**.
-
-Initially, the goal was **not** to build a language for the Internet.
-
-Instead, the team wanted to create software for intelligent consumer devices such as:
-
-- Televisions
-- Remote controls
-- Home appliances
-
-The team designed a new programming language called **Oak**, named after an oak tree outside Gosling's office.
-
-Later, they discovered that the name **Oak** had already been trademarked.
-
-The language was then renamed **Java**, inspired by the Java coffee consumed by the development team.
+* **Error**: Serious problems that applications should not try to handle (e.g., `OutOfMemoryError`).
+* **Exception**: Conditions that an application can handle.
+* **RuntimeException**: Programming errors that are not checked by the compiler.
 
 ---
 
-# The Rise of the Internet
+# Checked vs Unchecked Exceptions
 
-A few years later, the Internet began expanding rapidly.
+## Checked Exceptions
 
-The Green Project team realized that their language was perfectly suited for networked and distributed applications.
+Checked exceptions are verified by the compiler. You **must** either catch them or declare them using `throws`.
 
-In **1995**, Java was officially released.
+Examples:
 
-Its famous slogan became:
-
-> **Write Once, Run Anywhere (WORA)**
-
-Meaning:
-
-> Write your program once and run it on any platform.
-
-This became Java's greatest advantage.
-
----
-
-# What Problem Did Java Solve?
-
-Before Java, software had to be compiled separately for every operating system.
-
-### Example
-
-```
-C++ Program
-      │
-      ▼
-Compile for Windows
-      │
-      ▼
-Runs only on Windows
-```
-
-To run the same application elsewhere:
-
-```
-Compile again for Linux
-        ▼
-Linux Executable
-```
-
-```
-Compile again for macOS
-        ▼
-macOS Executable
-```
-
-Developers had to maintain multiple versions of the same software.
-
----
-
-Java introduced a different approach.
-
-```
-Java Source Code
-        │
-        ▼
-Compile Once
-        │
-        ▼
-Bytecode (.class)
-        │
-        ▼
-Runs on any computer with a JVM
-```
-
-This concept is known as **platform independence** or **portability**.
-
----
-
-# How Java Works
-
-Java execution happens in several stages.
-
-## 1. Write the Source Code
+* `IOException`
+* `SQLException`
+* `FileNotFoundException`
+* `InterruptedException`
+* `ClassNotFoundException`
 
 ```java
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
-
+public void readFile() throws IOException {
+    Files.readString(Path.of("users.txt"));
 }
 ```
 
 ---
 
-## 2. Compile the Code
+## Unchecked Exceptions
 
-The Java compiler (`javac`) converts the source code into **Bytecode**.
+Unchecked exceptions extend `RuntimeException`. They usually indicate bugs or invalid program logic.
 
-```
-Main.java
-     │
-     ▼
- javac
-     │
-     ▼
-Main.class
-```
+Examples:
 
-The `.class` file **does not contain machine code**.
+* `NullPointerException`
+* `IllegalArgumentException`
+* `IllegalStateException`
+* `ArithmeticException`
+* `IndexOutOfBoundsException`
 
-Instead, it contains **Bytecode**.
+These exceptions are **not** required to be caught.
 
 ---
 
-# What is Bytecode?
+# try, catch and finally
 
-Bytecode is an intermediate language.
+## try
 
-It is **not** specific to:
+The `try` block contains code that may throw an exception.
 
-- Windows
-- Linux
-- macOS
-
-Instead, it is a standardized instruction set understood by the **Java Virtual Machine (JVM)**.
-
----
-
-# What is the JVM?
-
-**JVM** stands for:
-
-> **Java Virtual Machine**
-
-The JVM is software installed on the operating system.
-
-Each platform has its own implementation.
-
-```
-Windows
-    │
-    ▼
-Windows JVM
-```
-
-```
-Linux
-   │
-   ▼
-Linux JVM
-```
-
-```
-macOS
-   │
-   ▼
-macOS JVM
-```
-
-The JVM translates Java Bytecode into native machine code that the processor understands.
-
-Because each operating system has its own JVM, the **same `.class` file** can run on multiple platforms.
-
----
-
-# Complete Execution Flow
-
-```
-Java Source Code (.java)
-          │
-          ▼
-      javac Compiler
-          │
-          ▼
-   Bytecode (.class)
-          │
-          ▼
-          JVM
-          │
-          ▼
-   Machine Code
-          │
-          ▼
-        CPU
+```java
+try {
+    int result = 10 / 0;
+}
 ```
 
 ---
 
-# What is the JDK?
+## catch
 
-**JDK** stands for:
+A `catch` block handles an exception thrown from the `try` block.
 
-> **Java Development Kit**
-
-It is the complete toolkit used to develop Java applications.
-
-It includes:
-
-- Java Compiler (`javac`)
-- JVM
-- Java Standard Library
-- Development tools
-    - `jar`
-    - `javadoc`
-    - `jdb`
-    - and many others
-
-Without the JDK, you cannot create Java applications.
-
----
-
-# What is the JRE?
-
-**JRE** stands for:
-
-> **Java Runtime Environment**
-
-The JRE contains only what is needed to **run** Java applications:
-
-- JVM
-- Java libraries
-
-It **does not** include the Java compiler (`javac`).
-
-Modern Java releases package everything inside the JDK, and standalone JRE distributions are no longer commonly provided.
-
----
-
-# JDK vs JRE vs JVM
-
-```
-JDK
-│
-├── javac
-├── Development Tools
-└── JRE
-     │
-     ├── Java Libraries
-     └── JVM
+```java
+try {
+    int result = 10 / 0;
+} catch (ArithmeticException e) {
+    System.out.println(e.getMessage());
+}
 ```
 
-Or simply:
+You can have multiple `catch` blocks.
 
-```
-JDK
- │
- ▼
-JRE
- │
- ▼
-JVM
+```java
+try {
+    // code
+} catch (IOException e) {
+    // handle file error
+} catch (SQLException e) {
+    // handle database error
+}
 ```
 
 ---
 
-# Why Did Java Become So Popular?
+## finally
 
-Java introduced many features that made software development easier and safer.
+The `finally` block always executes, whether an exception occurs or not. It is commonly used to release resources.
 
-- Object-Oriented Programming (OOP)
-- Automatic memory management (Garbage Collector)
-- Strong static typing
-- Platform independence
-- Built-in security checks
-- Large standard library
-- Native multithreading support
-- High performance through **Just-In-Time (JIT)** compilation
+```java
+try {
+    // code
+} catch (Exception e) {
+    // handle exception
+} finally {
+    System.out.println("Always executed");
+}
+```
 
----
+Typical use cases:
 
-# The JVM Does More Than Ensure Portability
-
-Besides executing Bytecode, the JVM is responsible for:
-
-- Memory management
-- Garbage Collection
-- Dynamic class loading (Class Loader)
-- Bytecode verification
-- Runtime optimization using the JIT compiler
-- Abstracting differences between operating systems and hardware architectures
+* Closing files
+* Closing database connections
+* Releasing resources
 
 ---
 
-# Summary
+# throw vs throws
 
-| Concept | Description |
-|----------|-------------|
-| **Java** | A programming language designed to be portable, secure, and object-oriented. |
-| **Source Code (.java)** | Code written by the programmer. |
-| **Compiler (`javac`)** | Converts Java source code into Bytecode. |
-| **Bytecode (.class)** | Platform-independent intermediate code. |
-| **JVM** | Executes Bytecode by translating it into machine code. |
-| **JRE** | Runtime environment required to execute Java applications. |
-| **JDK** | Complete development kit containing the compiler, tools, libraries, and JVM. |
+## throw
+
+Used to explicitly throw an exception.
+
+```java
+if (age < 0) {
+    throw new IllegalArgumentException("Age cannot be negative");
+}
+```
 
 ---
 
-# Key Takeaways
+## throws
 
-- Java was created in **1991** by **Sun Microsystems**.
-- It was originally designed for smart electronic devices.
-- It became popular with the growth of the Internet.
-- Java's biggest innovation was **platform independence**.
-- Programs are compiled into **Bytecode**, not machine code.
-- The **JVM** enables the same application to run on different operating systems.
-- The **JDK** is used to develop Java applications.
-- The **JRE** provides the environment needed to run Java applications.
-- The JVM also manages memory, performs security checks, and optimizes execution using the **Just-In-Time (JIT)** compiler.
+Declares that a method may throw one or more exceptions.
+
+```java
+public void loadFile() throws IOException {
+    Files.readString(Path.of("users.txt"));
+}
+```
+
+---
+
+# Common Exception Classes
+
+| Exception                         | When to use                                                   |
+| --------------------------------- | ------------------------------------------------------------- |
+| `NullPointerException`            | A required object reference is `null`.                        |
+| `IllegalArgumentException`        | A method receives an invalid argument.                        |
+| `IllegalStateException`           | An object is in an invalid state for the requested operation. |
+| `ArithmeticException`             | Invalid arithmetic operation (e.g., division by zero).        |
+| `NumberFormatException`           | A string cannot be converted into a number.                   |
+| `IndexOutOfBoundsException`       | Invalid index in a collection.                                |
+| `ArrayIndexOutOfBoundsException`  | Invalid array index.                                          |
+| `StringIndexOutOfBoundsException` | Invalid string index.                                         |
+| `ClassCastException`              | Invalid object cast.                                          |
+| `NoSuchElementException`          | Expected element does not exist.                              |
+| `ConcurrentModificationException` | A collection is modified during iteration.                    |
+| `UnsupportedOperationException`   | The operation is not supported.                               |
+| `IOException`                     | General input/output error.                                   |
+| `FileNotFoundException`           | File cannot be found.                                         |
+| `SQLException`                    | Database operation failed.                                    |
+| `InterruptedException`            | A thread is interrupted while waiting or sleeping.            |
+
+---
+
+# Best Practices
+
+* Use exceptions for **exceptional situations**, not for normal program flow.
+* Throw `IllegalArgumentException` for invalid method arguments.
+* Throw `IllegalStateException` when an object's current state prevents an operation.
+* Prefer `Objects.requireNonNull()` for required parameters.
+* Catch the **most specific exception** possible.
+* Avoid catching `Exception` unless you have a good reason.
+* Never ignore exceptions with an empty `catch` block.
+* Use `finally` (or **try-with-resources**) to release resources.
+* Include meaningful exception messages.
+
+---
+
+# Quick Summary
+
+| Keyword             | Purpose                                                              |
+| ------------------- | -------------------------------------------------------------------- |
+| `try`               | Wraps code that may throw exceptions.                                |
+| `catch`             | Handles exceptions.                                                  |
+| `finally`           | Executes regardless of whether an exception occurs.                  |
+| `throw`             | Explicitly throws an exception.                                      |
+| `throws`            | Declares exceptions that a method may throw.                         |
+| Checked Exception   | Must be handled or declared.                                         |
+| Unchecked Exception | Extends `RuntimeException`; handling is optional.                    |
+| `Error`             | Represents serious JVM problems that should not normally be handled. |
