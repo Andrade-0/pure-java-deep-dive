@@ -35,18 +35,17 @@ public class Main {
 
         // Map : creates a data with key-value
 
-
-        Map<String, Integer> mapCitizens = new TreeMap<>(); // HashMap: dont accept duplicates elements
-        // HashMap
+        Map<String, String> mapCitizens = new HashMap<>(); // Map: dont accept duplicates elements
+        // HashMap : Big O # O(1) - constant time - preserves insertion order
         // LinkedHashMap : preserves insertion order
         // TreeMap : organized list
         // Map.of : data key-value : immutable
-        mapCitizens.put("Ana", 12); // put : to add item on list
-        mapCitizens.put("Zatetinho", 23);
+        mapCitizens.put("name", "Augusto"); // put : to add item on list
+        mapCitizens.put("street", "grafanil");
        // mapCitizens.clear(); // to clear list
-        mapCitizens.putIfAbsent("João", 17); // putIfAbsent : If the specified key is not already associated with a value
-       // mapCitizens.merge("Maria", 21, ); // ??
-        System.out.println("containsKey: " + mapCitizens.containsKey("Morgan"));
+        mapCitizens.putIfAbsent("country", "Cape Verde"); // putIfAbsent : If the specified key is not already associated with a value
+        mapCitizens.merge("name", "Cabral", (oldValue, newValue) -> oldValue + " " + newValue); //
+        System.out.println("containsKey: " + mapCitizens.containsKey("name"));
         System.out.println(mapCitizens);
 
         mapCitizens.forEach( (key, value) -> System.out.println(key + ": " + value)  );
