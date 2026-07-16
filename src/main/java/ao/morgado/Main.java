@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello World, I´m doing a review of Java fundamentals!");
 
-        // Collections: to store and process data in memory
+        // Collections: to store and process data in memory //
 
         List<Integer> numbers = List.of(1,2,3); // is a collection to create a immutable list
         System.out.println(numbers);
