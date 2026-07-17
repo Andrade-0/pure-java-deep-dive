@@ -6,9 +6,12 @@ public class Main {
 
         // Threads
 
-        Thread thread1 = new Thread(new PlatformThread());
-        Thread thread2 = new Thread(new PlatformThread());
-        thread1.start();
-        thread2.start();
+//        Thread thread1 = new Thread(new PlatformThread());
+//        Thread thread2 = new Thread(new PlatformThread());
+//        thread1.start();
+//        thread2.start();
+
+        Thread threadCalcMedia = new Thread(new Calcs(10,6.4,17), "thread-calc-media");
+        threadCalcMedia.start();
     }
 }
